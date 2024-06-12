@@ -52,7 +52,7 @@ fun SplashScreenComposable(
             painter = painterResource(id = R.drawable.app_icon),
             contentDescription = "",
             modifier = Modifier
-                .size(dimensionResource(id = R.dimen.dp120))
+                .size(dimensionResource(id = R.dimen.dp130))
                 .fillMaxWidth()
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.dp100)))
                 .align(Alignment.CenterHorizontally),
