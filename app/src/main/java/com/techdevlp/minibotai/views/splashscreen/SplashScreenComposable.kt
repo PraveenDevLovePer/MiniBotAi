@@ -25,9 +25,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
 import com.techdevlp.minibotai.R
+import com.techdevlp.minibotai.datastore.StoredDataPreference
 import com.techdevlp.minibotai.more.spSizeResource
+import com.techdevlp.minibotai.navigation.ScreenNames
 import com.techdevlp.minibotai.ui.theme.sfProTextBold
 import com.techdevlp.minibotai.ui.theme.sfProTextMedium
+import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreenComposable(
@@ -36,6 +39,14 @@ fun SplashScreenComposable(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
+        val storedData = StoredDataPreference(context = context)
+        delay(2000)
+        navController.navigate(ScreenNames.OnBoardingScreen.route){
+            popUpTo(route = ScreenNames.SplashScreen.route){
+                inclusive=true
+            }
+            launchSingleTop = true
+        }
 
     }
 

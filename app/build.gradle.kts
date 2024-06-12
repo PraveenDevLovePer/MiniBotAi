@@ -59,6 +59,8 @@ dependencies {
     implementation(libs.coil.gif)
     //preference data store
     implementation(libs.androidx.datastore.preferences)
+    //Glide
+    implementation(libs.glide)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

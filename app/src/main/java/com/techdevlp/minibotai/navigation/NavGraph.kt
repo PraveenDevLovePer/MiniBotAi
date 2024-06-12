@@ -9,6 +9,8 @@ import androidx.navigation.compose.composable
 import com.techdevlp.minibotai.views.splashscreen.SplashScreenComposable
 import com.techdevlp.minibotai.more.SetNavigationBarColor
 import com.techdevlp.minibotai.more.SetStatusBarColor
+import com.techdevlp.minibotai.views.home.HomeScreenComposable
+import com.techdevlp.minibotai.views.onboarding.OnBoardingComposable
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -32,6 +34,14 @@ fun NavGraph(navController: NavHostController) {
         //Authentication
         composable(route = ScreenNames.SplashScreen.route) {
             SplashScreenComposable(navController = navController)
+        }
+        composable(route = ScreenNames.OnBoardingScreen.route) {
+            OnBoardingComposable(navController = navController)
+        }
+
+        //Home
+        composable(route = ScreenNames.HomeScreen.route) {
+            HomeScreenComposable()
         }
     }
 }

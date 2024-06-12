@@ -1,12 +1,13 @@
 package com.techdevlp.minibotai.navigation
 
-import androidx.compose.ui.graphics.vector.ImageVector
-
 sealed class ScreenNames(
-    val route: String,
-    val icon: ImageVector? = null,
-    val title: String? = null
+    val route: String
 ) {
     //Authentication
     data object SplashScreen : ScreenNames(route = "splash_screen")
+    data object OnBoardingScreen : ScreenNames(route = "onboarding_screen")
+
+    //Home
+    data object HomeScreen : ScreenNames(route = "home_screen")
+
 }
