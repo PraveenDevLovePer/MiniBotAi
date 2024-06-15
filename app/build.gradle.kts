@@ -1,17 +1,27 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.androidMapsPlatformSecrets)
 }
 
 android {
     namespace = "com.techdevlp.minibotai"
     compileSdk = 34
 
+    val properties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { properties.load(it) }
+    }
+    val aiApiKey: String = properties.getProperty("ai_api_key", "")
+
     defaultConfig {
         applicationId = "com.techdevlp.minibotai"
         minSdk = 28
         targetSdk = 34
-        versionCode = 1
+        versionCode = 4
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -21,12 +31,24 @@ android {
     }
 
     buildTypes {
+        debug {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            //Generated from https://aistudio.google.com/app/apikey
+            buildConfigField("String", "ai_api_key", "\"${aiApiKey}\"")
+        }
+
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            //Generated from https://aistudio.google.com/app/apikey
+            buildConfigField("String", "ai_api_key", "\"${aiApiKey}\"")
         }
     }
     compileOptions {
@@ -38,6 +60,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -54,13 +77,19 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     //App update manager
     implementation(libs.core)
-    //coin image loader
+    //coil image loader
     implementation(libs.coil.compose)
     implementation(libs.coil.gif)
     //preference data store
     implementation(libs.androidx.datastore.preferences)
     //Glide
     implementation(libs.glide)
+    //generative ai (gemini)
+    implementation(libs.generativeai)
+    //volley
+    implementation(libs.volley)
+    //App update manager
+    implementation(libs.core)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

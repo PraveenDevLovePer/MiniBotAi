@@ -24,12 +24,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
+import com.techdevlp.minibotai.BuildConfig
 import com.techdevlp.minibotai.R
 import com.techdevlp.minibotai.datastore.StoredDataPreference
 import com.techdevlp.minibotai.more.spSizeResource
 import com.techdevlp.minibotai.navigation.ScreenNames
 import com.techdevlp.minibotai.ui.theme.sfProTextBold
 import com.techdevlp.minibotai.ui.theme.sfProTextMedium
+import com.techdevlp.minibotai.ui.theme.sfProTextRegular
 import kotlinx.coroutines.delay
 
 @Composable
@@ -41,13 +43,21 @@ fun SplashScreenComposable(
     LaunchedEffect(Unit) {
         val storedData = StoredDataPreference(context = context)
         delay(2000)
-        navController.navigate(ScreenNames.OnBoardingScreen.route){
-            popUpTo(route = ScreenNames.SplashScreen.route){
-                inclusive=true
+        if (storedData.getOnBoardingToken()) {
+            navController.navigate(ScreenNames.HomeScreen.route) {
+                popUpTo(route = ScreenNames.SplashScreen.route) {
+                    inclusive = true
+                }
+                launchSingleTop = true
             }
-            launchSingleTop = true
+        } else {
+            navController.navigate(ScreenNames.OnBoardingScreen.route) {
+                popUpTo(route = ScreenNames.SplashScreen.route) {
+                    inclusive = true
+                }
+                launchSingleTop = true
+            }
         }
-
     }
 
     Column(
@@ -80,11 +90,20 @@ fun SplashScreenComposable(
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dp5)))
         Text(
+            text = "Version ${BuildConfig.VERSION_NAME}",
+            modifier = Modifier
+                .fillMaxWidth(),
+            fontFamily = FontFamily(sfProTextRegular),
+            fontSize = spSizeResource(id = R.dimen.sp11),
+            textAlign = TextAlign.Center,
+            color = Gray
+        )
+        Text(
             text = "by TechDevlp",
             modifier = Modifier
                 .fillMaxWidth(),
             fontFamily = FontFamily(sfProTextMedium),
-            fontSize = spSizeResource(id = R.dimen.sp13),
+            fontSize = spSizeResource(id = R.dimen.sp14),
             textAlign = TextAlign.Center,
             color = Gray
         )

@@ -53,8 +53,6 @@ import androidx.navigation.NavHostController
 import com.techdevlp.minibotai.R
 import com.techdevlp.minibotai.datastore.StoredDataPreference
 import com.techdevlp.minibotai.more.LoadingButton
-import com.techdevlp.minibotai.more.SetNavigationBarColor
-import com.techdevlp.minibotai.more.SetStatusBarColor
 import com.techdevlp.minibotai.more.spSizeResource
 import com.techdevlp.minibotai.navigation.ScreenNames
 import com.techdevlp.minibotai.navigation.canNavigate
@@ -70,9 +68,6 @@ import kotlinx.coroutines.launch
 fun OnBoardingComposable(
     navController: NavHostController
 ) {
-    SetStatusBarColor(color = Color.Transparent, isIconLight = true)
-    SetNavigationBarColor(color = Color.Transparent, isIconLight = true)
-
     val context = LocalContext.current
     val itemsList: List<OnBoardingItems> = OnBoardingItems.getData()
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
@@ -250,16 +245,16 @@ class OnBoardingItems(
         fun getData(): List<OnBoardingItems> {
             return listOf(
                 OnBoardingItems(
-                    R.drawable.app_icon,
-                    "Organize Documents"
+                    R.drawable.onboarding_one,
+                    "Chat Freely, Disappears Completely"
                 ),
                 OnBoardingItems(
-                    R.drawable.app_icon,
-                    "Manage Events"
+                    R.drawable.onboarding_two,
+                    "Chat Made Simple. Just You & MiniBot"
                 ),
                 OnBoardingItems(
-                    R.drawable.app_icon,
-                    "Manage Notes"
+                    R.drawable.onboarding_three,
+                    "Choose Your Light. Chat in Style"
                 )
             )
         }
