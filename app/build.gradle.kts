@@ -21,7 +21,7 @@ android {
         applicationId = "com.techdevlp.minibotai"
         minSdk = 28
         targetSdk = 34
-        versionCode = 4
+        versionCode = 5
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -84,7 +84,7 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     //Glide
     implementation(libs.glide)
-    //generative ai (gemini)
+    //generative ai
     implementation(libs.generativeai)
     //volley
     implementation(libs.volley)
