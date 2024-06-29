@@ -2,19 +2,21 @@ package com.techdevlp.minibotai.views.home
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -38,13 +40,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -59,7 +66,6 @@ import com.techdevlp.minibotai.ui.theme.AppThemeColor
 import com.techdevlp.minibotai.ui.theme.DisabledColor
 import com.techdevlp.minibotai.ui.theme.SecondaryColor
 import com.techdevlp.minibotai.ui.theme.sfProTextBold
-import com.techdevlp.minibotai.ui.theme.sfProTextMedium
 import com.techdevlp.minibotai.ui.theme.sfProTextRegular
 import kotlinx.coroutines.delay
 
@@ -93,34 +99,39 @@ fun HomeScreenComposable(myViewModel: ChatBotViewModel = viewModel(factory = Gen
                 .fillMaxSize()
         ) {
             // Header
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dp30)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dp15)))
             Text(
                 text = stringResource(id = R.string.app_name),
                 modifier = Modifier
                     .fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily(sfProTextBold),
-                fontSize = spSizeResource(id = R.dimen.sp26)
+                fontSize = spSizeResource(id = R.dimen.sp18)
             )
             Text(
                 text = "The Power of AI. For Brief Encounters.",
                 modifier = Modifier
                     .fillMaxWidth(),
                 fontFamily = FontFamily(sfProTextRegular),
-                fontSize = spSizeResource(id = R.dimen.sp16),
+                fontSize = spSizeResource(id = R.dimen.sp12),
                 textAlign = TextAlign.Center,
                 color = Color.Gray
             )
             // Messages List
             Column(
                 modifier = Modifier
-                    .padding(dimensionResource(id = R.dimen.dp16))
+                    .padding(
+                        top = dimensionResource(id = R.dimen.dp8),
+                        bottom = dimensionResource(id = R.dimen.dp8),
+                        start = dimensionResource(id = R.dimen.dp16),
+                        end = dimensionResource(R.dimen.dp16)
+                    )
                     .background(
                         color = MaterialTheme.colorScheme.primaryContainer,
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.dp16))
                     )
             ) {
-                ChatList(chatUiState.messages)
+                ChatList(chatUiState.messages, activity)
             }
         }
     }
@@ -128,15 +139,14 @@ fun HomeScreenComposable(myViewModel: ChatBotViewModel = viewModel(factory = Gen
 
 @Composable
 fun ChatList(
-    chatMessages: List<ChatMessage>
+    chatMessages: List<ChatMessage>,
+    activity: Activity
 ) {
-    val listState = rememberLazyListState()
     LazyColumn(
-        reverseLayout = false,
-        state = listState
+        reverseLayout = false
     ) {
         items(chatMessages.size) { message ->
-            ChatBubbleItem(chatMessages[message], listState, chatMessages.size)
+            ChatBubbleItem(chatMessages[message], activity)
         }
     }
 }
@@ -145,35 +155,55 @@ fun ChatList(
 @Composable
 fun ChatBubbleItem(
     chatMessage: ChatMessage,
-    listState: LazyListState,
-    size: Int
+    activity: Activity
 ) {
+    val clipboardManager: androidx.compose.ui.platform.ClipboardManager =
+        LocalClipboardManager.current
     Column(
         modifier = Modifier
-            .padding(horizontal = dimensionResource(id = R.dimen.dp10))
+            .padding(all = dimensionResource(id = R.dimen.dp5))
             .fillMaxWidth()
     ) {
-        Text(
-            text = chatMessage.participant.name,
-            fontSize = spSizeResource(id = R.dimen.sp15),
-            fontFamily = FontFamily(sfProTextMedium),
-            modifier = Modifier.padding(
-                top = dimensionResource(id = R.dimen.dp10),
-                end = dimensionResource(id = R.dimen.dp10),
-                start = dimensionResource(id = R.dimen.dp10),
-                bottom = dimensionResource(id = R.dimen.dp5)
-            ),
-            color = if (chatMessage.participant.name == "YOU") SecondaryColor else Color.Gray
-        )
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = chatMessage.participant.name,
+                fontSize = spSizeResource(id = R.dimen.sp12),
+                fontFamily = FontFamily(sfProTextRegular),
+                modifier = Modifier
+                    .padding(
+                        end = dimensionResource(id = R.dimen.dp5),
+                        start = dimensionResource(id = R.dimen.dp5)
+                    )
+                    .weight(1f),
+                color = if (chatMessage.participant.name == "YOU") SecondaryColor else Color.Gray
+            )
+
+            if (chatMessage.participant.name != "YOU") {
+                Image(
+                    painter = painterResource(id = R.drawable.copy_icon),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .align(Alignment.CenterVertically)
+                        .padding(end = dimensionResource(id = R.dimen.dp5))
+                        .size(dimensionResource(id = R.dimen.dp16))
+                        .clickable {
+                            clipboardManager.setText(AnnotatedString(chatMessage.text))
+                            Toast
+                                .makeText(activity, "Copied to clipboard", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                )
+            }
+        }
 
         Text(
             text = chatMessage.text,
-            fontSize = spSizeResource(id = R.dimen.sp18),
-            fontFamily = FontFamily(sfProTextMedium),
+            fontSize = spSizeResource(id = R.dimen.sp15),
+            fontFamily = FontFamily(sfProTextRegular),
             modifier = Modifier.padding(
-                bottom = dimensionResource(id = R.dimen.dp5),
-                end = dimensionResource(id = R.dimen.dp10),
-                start = dimensionResource(id = R.dimen.dp10)
+                end = dimensionResource(id = R.dimen.dp5),
+                start = dimensionResource(id = R.dimen.dp5)
             )
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dp10)))
@@ -181,8 +211,8 @@ fun ChatBubbleItem(
             CircularProgressIndicator(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(all = dimensionResource(id = R.dimen.dp10))
-                    .size(dimensionResource(id = R.dimen.dp24))
+                    .padding(all = dimensionResource(id = R.dimen.dp16))
+                    .size(dimensionResource(id = R.dimen.dp22))
             )
         }
     }
@@ -197,15 +227,18 @@ fun MessageInput(
     var userMessage by rememberSaveable { mutableStateOf("") }
     var userMessageError by remember { mutableStateOf(false) }
 
-    Column(){
+    Column {
         Row(
             modifier = Modifier
-                .padding(dimensionResource(id = R.dimen.dp15))
+                .padding(
+                    bottom = dimensionResource(id = R.dimen.dp10),
+                    start = dimensionResource(id = R.dimen.dp16)
+                )
                 .fillMaxWidth()
         ) {
             OutlinedTextField(
                 value = userMessage,
-                label = { Text(stringResource(R.string.chat_label)) },
+                label = { Text(stringResource(R.string.chat_label), fontSize = spSizeResource(id = R.dimen.sp13)) },
                 onValueChange = {
                     userMessageError = false
                     userMessage = it
@@ -216,12 +249,15 @@ fun MessageInput(
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .fillMaxWidth()
-                    .weight(0.85f),
+                    .weight(0.85f)
+                    .height(dimensionResource(id = R.dimen.dp55)),
+                textStyle = TextStyle(fontSize = spSizeResource(id = R.dimen.sp15)),
                 isError = userMessageError,
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = DisabledColor,
                     errorTextColor = Color.Red,
-                )
+                ),
+
             )
             IconButton(
                 onClick = {
@@ -259,12 +295,13 @@ fun MessageInput(
                 .padding(
                     start = dimensionResource(id = R.dimen.dp7),
                     end = dimensionResource(id = R.dimen.dp7),
-                    bottom = dimensionResource(id = R.dimen.dp10)
+                    bottom = dimensionResource(id = R.dimen.dp15)
                 ),
             fontFamily = FontFamily(sfProTextRegular),
-            fontSize = spSizeResource(id = R.dimen.sp11),
+            fontSize = spSizeResource(id = R.dimen.sp10),
             textAlign = TextAlign.Center,
-            color = Color.Gray
+            color = Color.Gray,
+            lineHeight = 12.sp,
         )
     }
 }

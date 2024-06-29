@@ -21,8 +21,8 @@ android {
         applicationId = "com.techdevlp.minibotai"
         minSdk = 28
         targetSdk = 34
-        versionCode = 5
-        versionName = "1.0"
+        versionCode = 7
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -76,7 +76,8 @@ dependencies {
     //Navigation
     implementation(libs.androidx.navigation.compose)
     //App update manager
-    implementation(libs.core)
+    implementation (libs.review)
+    implementation (libs.app.update)
     //coil image loader
     implementation(libs.coil.compose)
     implementation(libs.coil.gif)
@@ -88,8 +89,6 @@ dependencies {
     implementation(libs.generativeai)
     //volley
     implementation(libs.volley)
-    //App update manager
-    implementation(libs.core)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
