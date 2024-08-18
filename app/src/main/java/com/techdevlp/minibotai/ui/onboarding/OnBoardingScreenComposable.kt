@@ -1,4 +1,4 @@
-package com.techdevlp.minibotai.views.onboarding
+package com.techdevlp.minibotai.ui.onboarding
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
@@ -58,7 +58,6 @@ import com.techdevlp.minibotai.navigation.ScreenNames
 import com.techdevlp.minibotai.navigation.canNavigate
 import com.techdevlp.minibotai.ui.theme.AppThemeColor
 import com.techdevlp.minibotai.ui.theme.DisabledColor
-import com.techdevlp.minibotai.ui.theme.SecondaryColor
 import com.techdevlp.minibotai.ui.theme.sfProTextBold
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -232,7 +231,7 @@ fun Indicator(isSelected: Boolean) {
             .width(width.value)
             .clip(CircleShape)
             .background(
-                color = if (isSelected) SecondaryColor else DisabledColor
+                color = if (isSelected) AppThemeColor else DisabledColor
             )
     )
 }

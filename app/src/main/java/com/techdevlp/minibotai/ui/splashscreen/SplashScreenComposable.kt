@@ -1,4 +1,4 @@
-package com.techdevlp.minibotai.views.splashscreen
+package com.techdevlp.minibotai.ui.splashscreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -99,7 +99,7 @@ fun SplashScreenComposable(
             color = Gray
         )
         Text(
-            text = "by TechDevlp",
+            text = "Powered by TechDevlp",
             modifier = Modifier
                 .fillMaxWidth(),
             fontFamily = FontFamily(sfProTextMedium),

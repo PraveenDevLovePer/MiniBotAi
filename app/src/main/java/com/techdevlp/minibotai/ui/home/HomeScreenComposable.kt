@@ -1,4 +1,4 @@
-package com.techdevlp.minibotai.views.home
+package com.techdevlp.minibotai.ui.home
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -14,22 +14,28 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -40,6 +46,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -51,6 +58,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -85,6 +93,7 @@ fun HomeScreenComposable(myViewModel: ChatBotViewModel = viewModel(factory = Gen
     if (isCheckUpdate) CheckForUpdates(appUpdateManager = appUpdateManager)
 
     Scaffold(
+        modifier = Modifier.imePadding(),
         bottomBar = {
             MessageInput(
                 onSendMessage = { inputText ->
@@ -97,6 +106,7 @@ fun HomeScreenComposable(myViewModel: ChatBotViewModel = viewModel(factory = Gen
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
+                .navigationBarsPadding()
         ) {
             // Header
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dp15)))
@@ -106,33 +116,19 @@ fun HomeScreenComposable(myViewModel: ChatBotViewModel = viewModel(factory = Gen
                     .fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily(sfProTextBold),
-                fontSize = spSizeResource(id = R.dimen.sp18)
+                fontSize = spSizeResource(id = R.dimen.sp20)
             )
             Text(
                 text = "The Power of AI. For Brief Encounters.",
                 modifier = Modifier
                     .fillMaxWidth(),
                 fontFamily = FontFamily(sfProTextRegular),
-                fontSize = spSizeResource(id = R.dimen.sp12),
+                fontSize = spSizeResource(id = R.dimen.sp13),
                 textAlign = TextAlign.Center,
                 color = Color.Gray
             )
             // Messages List
-            Column(
-                modifier = Modifier
-                    .padding(
-                        top = dimensionResource(id = R.dimen.dp8),
-                        bottom = dimensionResource(id = R.dimen.dp8),
-                        start = dimensionResource(id = R.dimen.dp16),
-                        end = dimensionResource(R.dimen.dp16)
-                    )
-                    .background(
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.dp16))
-                    )
-            ) {
-                ChatList(chatUiState.messages, activity)
-            }
+            ChatList(chatUiState.messages, activity)
         }
     }
 }
@@ -161,9 +157,10 @@ fun ChatBubbleItem(
         LocalClipboardManager.current
     Column(
         modifier = Modifier
-            .padding(all = dimensionResource(id = R.dimen.dp5))
+            .padding(start = dimensionResource(id = R.dimen.dp5), end = dimensionResource(id = R.dimen.dp5))
             .fillMaxWidth()
     ) {
+        if (chatMessage.participant.name != "YOU") {
         Row(modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = chatMessage.participant.name,
@@ -177,35 +174,53 @@ fun ChatBubbleItem(
                     .weight(1f),
                 color = if (chatMessage.participant.name == "YOU") SecondaryColor else Color.Gray
             )
-
-            if (chatMessage.participant.name != "YOU") {
                 Image(
                     painter = painterResource(id = R.drawable.copy_icon),
                     contentDescription = "",
                     modifier = Modifier
                         .fillMaxHeight()
                         .align(Alignment.CenterVertically)
-                        .padding(end = dimensionResource(id = R.dimen.dp5))
+                        .padding(end = dimensionResource(id = R.dimen.dp10))
                         .size(dimensionResource(id = R.dimen.dp16))
                         .clickable {
                             clipboardManager.setText(AnnotatedString(chatMessage.text))
                             Toast
                                 .makeText(activity, "Copied to clipboard", Toast.LENGTH_SHORT)
                                 .show()
-                        }
+                        },
+                    colorFilter = ColorFilter.tint(color = if (isSystemInDarkTheme()) Color.White else Color.Black)
                 )
             }
         }
-
-        Text(
-            text = chatMessage.text,
-            fontSize = spSizeResource(id = R.dimen.sp15),
-            fontFamily = FontFamily(sfProTextRegular),
-            modifier = Modifier.padding(
-                end = dimensionResource(id = R.dimen.dp5),
-                start = dimensionResource(id = R.dimen.dp5)
-            )
-        )
+        Column(
+            modifier = Modifier
+                .padding(
+                    all = if (chatMessage.participant.name == "YOU") dimensionResource(id = R.dimen.dp5) else 0.dp
+                )
+                .background(
+                    color = if (chatMessage.participant.name == "YOU") AppThemeColor else Color.Transparent,
+                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.dp10))
+                )
+        ) {
+            CompositionLocalProvider(
+                value = LocalTextSelectionColors provides TextSelectionColors(
+                    handleColor = Color.Gray,
+                    backgroundColor = Color.LightGray.copy(alpha = 0.5f),
+                )
+            ) {
+                SelectionContainer {
+                    Text(
+                        text = chatMessage.text,
+                        fontSize = spSizeResource(id = R.dimen.sp16),
+                        fontFamily = FontFamily(sfProTextRegular),
+                        modifier = Modifier.padding(
+                            all = dimensionResource(id = R.dimen.dp7)
+                        ),
+                        color = if (chatMessage.participant.name == "YOU" || isSystemInDarkTheme()) Color.White else Color.Black
+                    )
+                }
+            }
+        }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dp10)))
         if (chatMessage.isPending) {
             CircularProgressIndicator(
@@ -225,7 +240,6 @@ fun MessageInput(
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
     var userMessage by rememberSaveable { mutableStateOf("") }
-    var userMessageError by remember { mutableStateOf(false) }
 
     Column {
         Row(
@@ -238,9 +252,13 @@ fun MessageInput(
         ) {
             OutlinedTextField(
                 value = userMessage,
-                label = { Text(stringResource(R.string.chat_label), fontSize = spSizeResource(id = R.dimen.sp13)) },
+                label = {
+                    Text(
+                        stringResource(R.string.chat_label),
+                        fontSize = spSizeResource(id = R.dimen.sp13)
+                    )
+                },
                 onValueChange = {
-                    userMessageError = false
                     userMessage = it
                 },
                 keyboardOptions = KeyboardOptions(
@@ -250,20 +268,17 @@ fun MessageInput(
                     .align(Alignment.CenterVertically)
                     .fillMaxWidth()
                     .weight(0.85f)
-                    .height(dimensionResource(id = R.dimen.dp55)),
+                    .heightIn(max = dimensionResource(id = R.dimen.dp150)),
                 textStyle = TextStyle(fontSize = spSizeResource(id = R.dimen.sp15)),
-                isError = userMessageError,
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = DisabledColor,
                     errorTextColor = Color.Red,
-                ),
-
+                )
             )
             IconButton(
                 onClick = {
                     if (isNetworkAvailable(context)) {
                         if (userMessage.isEmpty()) {
-                            userMessageError = true
                             showToast(context = context, message = "Please enter your question")
                         } else {
                             keyboardController?.hide()
@@ -298,7 +313,7 @@ fun MessageInput(
                     bottom = dimensionResource(id = R.dimen.dp15)
                 ),
             fontFamily = FontFamily(sfProTextRegular),
-            fontSize = spSizeResource(id = R.dimen.sp10),
+            fontSize = spSizeResource(id = R.dimen.sp11),
             textAlign = TextAlign.Center,
             color = Color.Gray,
             lineHeight = 12.sp,

@@ -6,11 +6,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.techdevlp.minibotai.views.splashscreen.SplashScreenComposable
 import com.techdevlp.minibotai.more.SetNavigationBarColor
 import com.techdevlp.minibotai.more.SetStatusBarColor
-import com.techdevlp.minibotai.views.home.HomeScreenComposable
-import com.techdevlp.minibotai.views.onboarding.OnBoardingComposable
+import com.techdevlp.minibotai.ui.home.HomeScreenComposable
+import com.techdevlp.minibotai.ui.onboarding.OnBoardingComposable
+import com.techdevlp.minibotai.ui.splashscreen.SplashScreenComposable
 
 @Composable
 fun NavGraph(navController: NavHostController) {

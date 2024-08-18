@@ -3,6 +3,7 @@ package com.techdevlp.minibotai.more
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -10,8 +11,10 @@ import android.net.Uri
 import android.util.TypedValue
 import android.view.View
 import android.view.Window
+import androidx.activity.ComponentActivity
 import androidx.annotation.DimenRes
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -23,7 +26,6 @@ import androidx.core.view.WindowCompat
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.techdevlp.minibotai.more.REQUEST_CODE_UPDATE
 
 @Composable
 fun SetStatusBarColor(color: Color, isIconLight: Boolean) {
@@ -114,4 +116,17 @@ fun CheckForUpdates(appUpdateManager: AppUpdateManager) {
 fun showToast(context: Context, message: String) {
     val toast = android.widget.Toast.makeText(context, message, android.widget.Toast.LENGTH_SHORT)
     toast.show()
+}
+
+@Composable
+fun SetScreenOrientation() {
+    val context = LocalContext.current
+    DisposableEffect(Unit) {
+        val activity = context as ComponentActivity
+        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        onDispose {
+            // Reset to the system default orientation on dispose
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+    }
 }

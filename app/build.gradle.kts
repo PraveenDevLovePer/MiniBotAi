@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.techdevlp.minibotai"
-    compileSdk = 34
+    compileSdk = 35
 
     val properties = Properties()
     val localPropertiesFile = rootProject.file("local.properties")
@@ -20,9 +20,9 @@ android {
     defaultConfig {
         applicationId = "com.techdevlp.minibotai"
         minSdk = 28
-        targetSdk = 34
-        versionCode = 7
-        versionName = "1.1"
+        targetSdk = 35
+        versionCode = 9
+        versionName = "1.3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -42,7 +42,8 @@ android {
         }
 
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -63,7 +64,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
     packaging {
         resources {
@@ -87,8 +88,6 @@ dependencies {
     implementation(libs.glide)
     //generative ai
     implementation(libs.generativeai)
-    //volley
-    implementation(libs.volley)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

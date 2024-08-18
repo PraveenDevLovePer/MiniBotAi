@@ -1,4 +1,4 @@
-package com.techdevlp.minibotai.views.home
+package com.techdevlp.minibotai.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

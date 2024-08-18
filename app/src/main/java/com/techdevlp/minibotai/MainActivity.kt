@@ -10,6 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.techdevlp.minibotai.more.SetScreenOrientation
 import com.techdevlp.minibotai.navigation.NavGraph
 import com.techdevlp.minibotai.ui.theme.MiniBotAITheme
 
@@ -23,6 +24,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    SetScreenOrientation()
                     val navController: NavHostController = rememberNavController()
                     NavGraph(
                         navController = navController

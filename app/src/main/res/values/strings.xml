@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MiniBot AI</string>
+    <string name="app_name">ChatBot AI</string>
     <string name="chat_label">Enter Question Here</string>
     <string name="action_send">Send</string>
 </resources>
