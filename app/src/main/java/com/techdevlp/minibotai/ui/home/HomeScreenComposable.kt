@@ -16,9 +16,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -104,12 +104,11 @@ fun HomeScreenComposable(myViewModel: ChatBotViewModel = viewModel(factory = Gen
     ) { paddingValues ->
         Column(
             modifier = Modifier
-                .padding(paddingValues)
                 .fillMaxSize()
-                .navigationBarsPadding()
+                .statusBarsPadding()
         ) {
             // Header
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dp15)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dp10)))
             Text(
                 text = stringResource(id = R.string.app_name),
                 modifier = Modifier
@@ -157,7 +156,10 @@ fun ChatBubbleItem(
         LocalClipboardManager.current
     Column(
         modifier = Modifier
-            .padding(start = dimensionResource(id = R.dimen.dp5), end = dimensionResource(id = R.dimen.dp5))
+            .padding(
+                start = dimensionResource(id = R.dimen.dp5),
+                end = dimensionResource(id = R.dimen.dp5)
+            )
             .fillMaxWidth()
     ) {
         if (chatMessage.participant.name != "YOU") {
@@ -318,5 +320,6 @@ fun MessageInput(
             color = Color.Gray,
             lineHeight = 12.sp,
         )
+        Spacer(modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.dp36)))
     }
 }
