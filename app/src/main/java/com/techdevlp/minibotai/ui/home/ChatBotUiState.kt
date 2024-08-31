@@ -1,5 +1,6 @@
 package com.techdevlp.minibotai.ui.home
 
+import android.os.Build
 import androidx.compose.runtime.toMutableStateList
 
 class ChatBotUiState(
@@ -16,7 +17,13 @@ class ChatBotUiState(
         val lastMessage = _messages.lastOrNull()
         lastMessage?.let {
             val newMessage = lastMessage.apply { isPending = false }
-            _messages.removeLast()
+            if (Build.VERSION.SDK_INT >= 35) {
+                _messages.removeLast()
+            }else {
+                if (_messages.isNotEmpty()) {
+                    _messages.removeAt(_messages.size - 1)
+                }
+            }
             _messages.add(newMessage)
         }
     }

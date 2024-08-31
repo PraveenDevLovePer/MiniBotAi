@@ -104,6 +104,7 @@ fun HomeScreenComposable(myViewModel: ChatBotViewModel = viewModel(factory = Gen
     ) { paddingValues ->
         Column(
             modifier = Modifier
+                .padding(bottom = paddingValues.calculateBottomPadding())
                 .fillMaxSize()
                 .statusBarsPadding()
         ) {

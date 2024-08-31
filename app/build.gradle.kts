@@ -21,8 +21,8 @@ android {
         applicationId = "com.techdevlp.minibotai"
         minSdk = 28
         targetSdk = 35
-        versionCode = 10
-        versionName = "1.3.1"
+        versionCode = 12
+        versionName = "1.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
